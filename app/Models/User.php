@@ -6,7 +6,23 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 
+/**
+ * class User
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string $document
+ * @property float $balance
+ * @property int $type_id
+ * -
+ * @property UserType $type
+ * @property Collection|Transaction[] $payee_transactions
+ * @property Collection|Transaction[] $payer_transactions
+ */
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -20,6 +36,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'balance',
+        'type_id'
     ];
 
     /**
@@ -28,16 +46,23 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password'
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public $timestamps = false;
+
+    public function type()
+    {
+        return $this->hasOne(UserType::class, 'id', 'type_id');
+    }
+
+    public function payee_transactions()
+    {
+        return $this->hasMany(Transaction::class, 'id', 'payee_id');
+    }
+
+    public function payer_transactions()
+    {
+        return $this->hasMany(Transaction::class, 'id', 'payer_id');
+    }
 }

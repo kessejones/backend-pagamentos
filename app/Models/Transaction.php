@@ -20,10 +20,16 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    protected $table = 'transactions';
+
     protected $fillable = [
         'value',
         'payer_id',
         'payee_id'
+    ];
+
+    protected $casts = [
+        'value' => 'float'
     ];
 
     public $timestamps = false;

@@ -27,6 +27,8 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    protected $table = 'users';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -35,6 +37,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'document',
         'password',
         'balance',
         'type_id'
@@ -47,6 +50,10 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password'
+    ];
+
+    protected $casts = [
+        'balance' => 'float'
     ];
 
     public $timestamps = false;
@@ -64,5 +71,14 @@ class User extends Authenticatable
     public function payer_transactions()
     {
         return $this->hasMany(Transaction::class, 'id', 'payer_id');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::creating(function(User $user){
+            $user->password = bcrypt($user->password);
+        });
     }
 }

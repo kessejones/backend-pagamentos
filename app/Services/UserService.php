@@ -3,11 +3,24 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\UserType;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use RuntimeException;
 
 class UserService extends AbstractService
 {
+    private function validate_document(UserType $type, $document)
+    {
+        $str = Str::of($document)->replaceMatches('/(\D)/', '');
+        if($type->type_name == 'lojista')
+            return $str->length() == 14;
+        if($type->type_name == 'normal')
+            return $str->length() == 11;
+        return false;
+    }
+
     public function create(array $data)
     {
         $result = [];
@@ -15,6 +28,10 @@ class UserService extends AbstractService
         try
         {
             DB::beginTransaction();
+
+            $user_type = UserType::find($data['type_id']);
+            if(!$this->validate_document($user_type, $data['document']))
+                throw new RuntimeException("Invalid document for user type");
 
             $user = User::create($data);
             $result = [

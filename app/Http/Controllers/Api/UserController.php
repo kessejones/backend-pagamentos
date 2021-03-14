@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\ControllerApi;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Rules\DocumentSizeRule;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 use Illuminate\Http\Response;
@@ -29,7 +30,7 @@ class UserController extends ControllerApi
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
-            'document' => 'required|string|unique:users,document',
+            'document' => ['required', 'string', 'unique:users,document', new DocumentSizeRule],
             'type_id' => 'required|exists:users_types,id'
         ]);
 

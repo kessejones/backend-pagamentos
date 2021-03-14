@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,3 +19,5 @@ Route::get('/user', [UserController::class, 'all']);
 Route::post('/user', [UserController::class, 'create']);
 Route::get('/user/{user}', [UserController::class, 'data']);
 Route::post('/user/{user}/balance', [UserController::class, 'add_balance']);
+
+Route::post('/transaction', [TransactionController::class, 'create']);

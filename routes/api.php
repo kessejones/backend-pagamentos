@@ -18,6 +18,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/user', [UserController::class, 'all']);
 Route::post('/user', [UserController::class, 'create']);
 Route::get('/user/{user}', [UserController::class, 'data']);
-Route::post('/user/{user}/balance', [UserController::class, 'add_balance']);
+Route::post('/user/{user}/deposit', [UserController::class, 'add_balance']);
 
 Route::post('/transaction', [TransactionController::class, 'create']);

@@ -20,7 +20,7 @@ class UserType extends Model
     protected $table = 'users_types';
 
     protected $fillable = [
-        'name'
+        'type_name'
     ];
 
     public $timestamps = false;

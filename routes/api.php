@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/user', [UserController::class, 'all']);
+Route::post('/user', [UserController::class, 'create']);
+Route::get('/user/{user}', [UserController::class, 'data']);
+Route::post('/user/{user}/balance', [UserController::class, 'add_balance']);

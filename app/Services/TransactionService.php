@@ -27,7 +27,7 @@ class TransactionService extends AbstractService
         try
         {
             DB::beginTransaction();
-            if($data['value'] <= 0)
+            if(floatval($data['value']) <= 0.01)
                 throw new RuntimeException("Invalid amount for a transfer");
 
             if($data['payee'] == $data['payer'])

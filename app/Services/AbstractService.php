@@ -14,7 +14,7 @@ abstract class AbstractService
         return Result::create_error($payload['error']);
     }
 
-    protected function result_success(array $data = [])
+    protected function result_success($data = [])
     {
         return Result::create_success($data);
     }

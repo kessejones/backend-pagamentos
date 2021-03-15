@@ -21,6 +21,12 @@ class UserService extends AbstractService
         return false;
     }
 
+    public function all()
+    {
+        $users = User::all();
+        return $this->result_success($users);
+    }
+
     public function create(array $data)
     {
         $result = [];

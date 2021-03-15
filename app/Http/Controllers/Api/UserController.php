@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\ControllerApi;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UsersResource;
 use App\Models\User;
 use App\Rules\DocumentSizeRule;
 use Illuminate\Http\Request;
@@ -17,6 +18,12 @@ class UserController extends ControllerApi
     public function __construct(UserService $user_service)
     {
         $this->user_service = $user_service;
+    }
+
+    public function all()
+    {
+        $result = $this->user_service->all();
+        return $this->response($result, UsersResource::class);
     }
 
     public function data(User $user)

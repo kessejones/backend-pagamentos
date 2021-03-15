@@ -26,7 +26,7 @@ class ControllerApi extends Controller
             if($exception instanceof RuntimeException)
             {
                 return abort(response()->json([
-                    'error' => $exception->getMessage()
+                    'message' => $exception->getMessage()
                 ], Response::HTTP_UNPROCESSABLE_ENTITY));
             }
             return abort(response()->json(['message' => 'Internal Error', 'error' => $exception->getMessage()], 500));

@@ -16,11 +16,19 @@ class UserTest extends TestCase
         $type_normal = UserType::create([
             'type_name' => 'normal'
         ]);
+        $this->assertDatabaseHas('users_types', [
+            'type_name' => 'normal',
+        ]);
 
         $this->assertNotNull($type_normal);
 
         $user_normal = User::factory()->make([
             'type_id' => $type_normal->id
+        ]);
+        $user_normal->save();
+
+        $this->assertDatabaseHas('users', [
+            'document' => $user_normal->document,
         ]);
 
         $this->assertNotNull($user_normal);
@@ -32,11 +40,19 @@ class UserTest extends TestCase
         $type_lojista = UserType::create([
             'type_name' => 'lojista'
         ]);
+        $this->assertDatabaseHas('users_types', [
+            'type_name' => 'lojista',
+        ]);
 
         $this->assertNotNull($type_lojista);
 
         $user_lojista = User::factory()->make([
             'type_id' => $type_lojista->id
+        ]);
+        $user_lojista->save();
+
+        $this->assertDatabaseHas('users', [
+            'document' => $user_lojista->document,
         ]);
 
         $this->assertNotNull($user_lojista);

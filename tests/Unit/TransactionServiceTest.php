@@ -105,7 +105,7 @@ class TransactionServiceTest extends TestCase
         $this->assertFalse($result->status());
     }
 
-    public function test_create_transaction_error_different_users()
+    public function test_create_transaction_error_equal_users()
     {
         $user_normal = $this->make_user($this->user_type_normal, 100);
         $this->assertNotNull($user_normal);
@@ -148,6 +148,23 @@ class TransactionServiceTest extends TestCase
             'payer' => $user_lojista->id,
             'payee' => $user_normal->id,
             'value' => 10
+        ]);
+
+        $this->assertFalse($result->status());
+    }
+
+    public function test_create_transaction_error_invalid_value()
+    {
+        $user_normal = $this->make_user($this->user_type_normal, 100);
+        $this->assertNotNull($user_normal);
+
+        $user_lojista = $this->make_user($this->user_type_lojista, 100);
+        $this->assertNotNull($user_lojista);
+
+        $result = $this->transaction_service->create([
+            'payer' => $user_lojista->id,
+            'payee' => $user_normal->id,
+            'value' => -10
         ]);
 
         $this->assertFalse($result->status());

@@ -194,4 +194,58 @@ class UserServiceTest extends TestCase
         $this->assertFalse($result_duplicate->status());
         $this->assertNotNull($result_duplicate->exception());
     }
+
+    public function test_create_user_lojista_error_document_invalid()
+    {
+        $type_lojista = UserType::create([
+            'type_name' => 'lojista'
+        ]);
+        $this->assertNotNull($type_lojista);
+
+        $result = $this->user_service->create([
+            'name' => 'user 1',
+            'email' => 'user1@email.com',
+            'document' => '1',
+            'type_id' => $type_lojista->id
+        ]);
+
+        $this->assertFalse($result->status());
+        $this->assertNotNull($result->exception());
+    }
+
+    public function test_create_user_lojista_error_lojista_cpf()
+    {
+        $type_lojista = UserType::create([
+            'type_name' => 'lojista'
+        ]);
+        $this->assertNotNull($type_lojista);
+
+        $result = $this->user_service->create([
+            'name' => 'user 1',
+            'email' => 'user1@email.com',
+            'document' => '48632491016',
+            'type_id' => $type_lojista->id
+        ]);
+
+        $this->assertFalse($result->status());
+        $this->assertNotNull($result->exception());
+    }
+
+    public function test_create_user_lojista_error_normal_cnpj()
+    {
+        $type_normal = UserType::create([
+            'type_name' => 'normal'
+        ]);
+        $this->assertNotNull($type_normal);
+
+        $result = $this->user_service->create([
+            'name' => 'user 1',
+            'email' => 'user1@email.com',
+            'document' => '60833115000199',
+            'type_id' => $type_normal->id
+        ]);
+
+        $this->assertFalse($result->status());
+        $this->assertNotNull($result->exception());
+    }
 }

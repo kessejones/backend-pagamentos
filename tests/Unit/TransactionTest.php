@@ -2,6 +2,8 @@
 
 namespace Tests\Unit;
 
+use App\Models\Transaction;
+use App\Models\User;
 use App\Models\UserType;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,30 +23,51 @@ class TransactionTest extends TestCase
             'type_name' => 'normal'
         ]);
 
-        $this->assertTrue(!is_null($type_normal));
+        $this->assertDatabaseHas('users_types', [
+            'type_name' => 'normal',
+        ]);
 
         $type_lojista = UserType::create([
             'type_name' => 'lojista'
         ]);
 
-        $this->assertTrue(!is_null($type_lojista));
-
-        $user_payer = $type_normal->users()->create([
-            'name' => 'user 1',
-            'email' => 'user1@system.com',
-            'document' => '12112343112',
-            'password' => bcrypt('123456')
+        $this->assertDatabaseHas('users_types', [
+            'type_name' => 'lojista',
         ]);
 
-        $this->assertTrue(!is_null($user_payer));
+        $user_payer = User::factory()->make([
+            'type_id' => $type_normal->id,
+            'balance' => 100
+        ]);
+        $user_payer->save();
 
-        $user_payee = $type_lojista->users()->create([
-            'name' => 'user 1',
-            'email' => 'user2@system.com',
-            'document' => '12112343113',
-            'password' => bcrypt('123456')
+        $this->assertDatabaseHas('users', [
+            'email' => $user_payer->email,
+            'document' => $user_payer->document
         ]);
 
-        $this->assertTrue(!is_null($user_payee));
+        $user_payee = User::factory()->make([
+            'type_id' => $type_lojista->id,
+            'balance' => 0
+        ]);
+        $user_payee->save();
+
+        $this->assertDatabaseHas('users', [
+            'email' => $user_payee->email,
+            'document' => $user_payee->document
+        ]);
+
+        $transaction = Transaction::create([
+            'payer_id' => $user_payer->id,
+            'payee_id' => $user_payee->id,
+            'value' => 10
+        ]);
+
+        $this->assertNotNull($transaction);
+        $this->assertDatabaseHas('transactions', [
+            'payer_id' => $user_payer->id,
+            'payee_id' => $user_payee->id,
+            'value' => 10
+        ]);
     }
 }

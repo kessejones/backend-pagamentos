@@ -19,6 +19,7 @@ services:
         command: --default-authentication-plugin=mysql_native_password --sql_mode=''
         environment:
             MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: pagamentos
         ports:
             - 3306:3306
 

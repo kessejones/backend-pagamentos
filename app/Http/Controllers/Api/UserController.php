@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\ControllerApi;
+use App\Http\Resources\BalanceResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UsersResource;
 use App\Models\User;
@@ -52,6 +53,6 @@ class UserController extends ControllerApi
         ]);
 
         $result = $this->user_service->add_balance($user, $data_valid);
-        return $this->response($result, UserResource::class, Response::HTTP_CREATED);
+        return $this->response($result, BalanceResource::class, Response::HTTP_CREATED);
     }
 }

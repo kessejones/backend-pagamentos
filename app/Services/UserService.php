@@ -67,6 +67,9 @@ class UserService extends AbstractService
         {
             DB::beginTransaction();
 
+            if(floatval($data['value']) < 0.01)
+                throw new RuntimeException("Invalid amount for a deposit");
+
             $user->balance += $data['value'];
             $user->save();
 

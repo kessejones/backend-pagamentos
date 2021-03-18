@@ -248,4 +248,61 @@ class UserServiceTest extends TestCase
         $this->assertFalse($result->status());
         $this->assertNotNull($result->exception());
     }
+
+    public function test_create_deposit_success()
+    {
+        $type_normal = UserType::create([
+            'type_name' => 'normal'
+        ]);
+        $this->assertNotNull($type_normal);
+
+        $result_user = $this->user_service->create([
+            'name' => 'user 1',
+            'email' => 'user1@email.com',
+            'document' => '24722016054',
+            'type_id' => $type_normal->id
+        ]);
+
+        $this->assertTrue($result_user->status());
+        $this->assertNull($result_user->exception());
+        $this->assertNotNull($result_user->data());
+
+        $user = $result_user->data();
+        $result_deposit = $this->user_service->add_balance($user, [
+            'value' => 10,
+        ]);
+
+        $this->assertTrue($result_deposit->status());
+        $this->assertNull($result_deposit->exception());
+
+        $user->refresh();
+        $this->assertEquals($user->balance, 10);
+    }
+
+    public function test_create_deposit_value_invalid()
+    {
+        $type_normal = UserType::create([
+            'type_name' => 'normal'
+        ]);
+        $this->assertNotNull($type_normal);
+
+        $result_user = $this->user_service->create([
+            'name' => 'user 1',
+            'email' => 'user1@email.com',
+            'document' => '24722016054',
+            'type_id' => $type_normal->id
+        ]);
+
+        $this->assertTrue($result_user->status());
+        $this->assertNull($result_user->exception());
+        $this->assertNotNull($result_user->data());
+
+        $user = $result_user->data();
+        $result_deposit = $this->user_service->add_balance($user, [
+            'value' => 0,
+        ]);
+
+        $this->assertFalse($result_deposit->status());
+        $this->assertNotNull($result_deposit->exception());
+    }
 }

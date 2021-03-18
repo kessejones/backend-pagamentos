@@ -44,6 +44,103 @@ class UserTest extends TestCase
         ]);
     }
 
+    public function test_users_list()
+    {
+        $this->assertNotNull($this->user_type_normal);
+
+        $response1 = $this->postJson('/api/user', [
+            'name' => 'user 1',
+            'email' => 'user1@system.com',
+            'document' => '25141104087',
+            'password' => '123123',
+            'type_id' => $this->user_type_normal->id
+        ]);
+
+        $response1->assertStatus(201);
+        $response1->assertJsonStructure([
+            'id', 'name', 'email', 'document'
+        ]);
+
+        $response2 = $this->postJson('/api/user', [
+            'name' => 'user 2',
+            'email' => 'user2@system.com',
+            'document' => '56817851220',
+            'password' => '312312',
+            'type_id' => $this->user_type_normal->id
+        ]);
+
+        $response2->assertStatus(201);
+        $response2->assertJsonStructure([
+            'id', 'name', 'email', 'document'
+        ]);
+
+        $response = $this->getJson('/api/user');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            '*' => [
+                'id', 'name', 'email', 'balance', 'document', 'type_id'
+            ]
+        ]);
+    }
+
+    public function test_deposit_success()
+    {
+        $this->assertNotNull($this->user_type_normal);
+
+        $response_user = $this->postJson('/api/user', [
+            'name' => 'user 1',
+            'email' => 'user1@system.com',
+            'document' => '25141104087',
+            'password' => '123123',
+            'type_id' => $this->user_type_normal->id
+        ]);
+
+        $response_user->assertStatus(201);
+        $response_user->assertJsonStructure([
+            'id', 'name', 'email', 'document'
+        ]);
+
+        $id_user = $response_user->json('id');
+
+        $response_deposit = $this->postJson("/api/user/{$id_user}/deposit", [
+            'value' => 134
+        ]);
+
+        $response_deposit->assertStatus(201);
+        $response_deposit->assertJsonStructure([
+            'balance'
+        ]);
+    }
+
+    public function test_deposit_invalid_value()
+    {
+        $this->assertNotNull($this->user_type_normal);
+
+        $response_user = $this->postJson('/api/user', [
+            'name' => 'user 1',
+            'email' => 'user1@system.com',
+            'document' => '25141104087',
+            'password' => '123123',
+            'type_id' => $this->user_type_normal->id
+        ]);
+
+        $response_user->assertStatus(201);
+        $response_user->assertJsonStructure([
+            'id', 'name', 'email', 'document'
+        ]);
+
+        $id_user = $response_user->json('id');
+
+        $response_deposit = $this->postJson("/api/user/{$id_user}/deposit", [
+            'value' => 0
+        ]);
+
+        $response_deposit->assertStatus(422);
+        $response_deposit->assertJsonStructure([
+            'message', 'errors'
+        ]);
+    }
+
     public function test_create_user_lojista()
     {
         $this->assertNotNull($this->user_type_lojista);
